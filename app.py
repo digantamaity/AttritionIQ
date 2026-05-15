@@ -1,54 +1,102 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import pandas as pd
 import numpy as np
 import pickle
 import os
 from PIL import Image
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-# Page Config
-st.set_page_config(page_title="AttritionIQ Dashboard", page_icon="👥", layout="wide", initial_sidebar_state="expanded")
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="AttritionIQ", layout="wide", initial_sidebar_state="collapsed")
 
-# --- CUSTOM CSS FOR PROFESSIONAL UI ---
+# --- CUSTOM CSS (GLASSMORPHISM, FONTS, HIDDEN DEFAULTS) ---
 st.markdown("""
 <style>
-    .reportview-container {
-        background: #0E1117;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
     }
-    .metric-card {
-        background-color: #1E1E1E;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #00C4B4;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        margin-bottom: 20px;
+    
+    /* Background Gradient for a premium feel */
+    .stApp {
+        background: linear-gradient(135deg, #0A0F1C 0%, #111A2C 100%);
+        color: #E2E8F0;
     }
+    
+    /* Hide Default Streamlit Elements */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Glassmorphism Cards */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 24px;
+        margin-bottom: 24px;
+        transition: transform 0.2s ease-in-out;
+    }
+    .glass-card:hover {
+        transform: translateY(-5px);
+        border: 1px solid rgba(0, 196, 180, 0.3);
+    }
+    
+    .glass-card-accent-1 { border-left: 4px solid #00C4B4; }
+    .glass-card-accent-2 { border-left: 4px solid #FF4B4B; }
+    .glass-card-accent-3 { border-left: 4px solid #FACA2B; }
+    .glass-card-accent-4 { border-left: 4px solid #0068C9; }
+    
     .metric-title {
-        color: #A0AEC0;
-        font-size: 14px;
+        color: #94A3B8;
+        font-size: 13px;
         text-transform: uppercase;
         font-weight: 600;
-        margin-bottom: 5px;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
     }
     .metric-value {
-        color: #FFFFFF;
-        font-size: 28px;
+        color: #F8FAFC;
+        font-size: 32px;
         font-weight: 700;
     }
-    .hero-title {
+    
+    .main-title {
         color: #00C4B4;
-        font-size: 42px;
+        font-size: 48px;
         font-weight: 800;
-        margin-bottom: 10px;
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
     }
-    .hero-subtitle {
-        color: #E2E8F0;
+    .sub-title {
+        color: #94A3B8;
         font-size: 18px;
-        margin-bottom: 30px;
+        font-weight: 400;
+        margin-bottom: 32px;
     }
-    .stProgress .st-bo {
-        background-color: #00C4B4;
+    
+    /* Custom Footer */
+    .custom-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(10, 15, 28, 0.85);
+        backdrop-filter: blur(8px);
+        color: #64748B;
+        text-align: center;
+        padding: 12px 0;
+        font-size: 13px;
+        z-index: 100;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Form styling */
+    .stNumberInput, .stSelectbox, .stSlider {
+        margin-bottom: 16px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -61,7 +109,6 @@ MODEL_FILE = 'models/model.pkl'
 def load_data():
     if os.path.exists(DATA_FILE):
         df = pd.read_csv(DATA_FILE)
-        # Clean basic useless columns for display
         cols_to_drop = ['EmployeeCount', 'Over18', 'StandardHours', 'EmployeeNumber']
         df = df.drop(columns=[col for col in cols_to_drop if col in df.columns])
         return df
@@ -78,33 +125,43 @@ df = load_data()
 model_data = load_model()
 
 if df is None:
-    st.error("⚠️ Dataset not found. Please run `python train_model.py` first to download data and train the model.")
+    st.error("Dataset not found. Please run the training script.")
     st.stop()
 
-if model_data is None:
-    st.warning("⚠️ Model not found. Running predictions will not work until you run `python train_model.py`.")
+# --- HEADER & NAVIGATION ---
+col_logo, col_nav = st.columns([1, 4])
 
-# --- SIDEBAR FILTERS ---
-st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=100)
-st.sidebar.title("Navigation & Filters")
+with col_logo:
+    if os.path.exists("assets/logo.png"):
+        st.image("assets/logo.png", width=180)
+    else:
+        st.markdown("<h2 style='color:#00C4B4; margin-top:10px;'>AttritionIQ</h2>", unsafe_allow_html=True)
 
-# Sidebar Navigation
-page = st.sidebar.radio("Go to:", 
-    ["🏠 Home / Hero", 
-     "📊 Analytics Dashboard", 
-     "🤖 Machine Learning", 
-     "🔮 Live Prediction",
-     "💡 Business Insights"]
-)
+with col_nav:
+    selected = option_menu(
+        menu_title=None,
+        options=["Home", "Analytics", "Machine Learning", "Live Prediction", "Insights"],
+        icons=["house", "bar-chart-line", "cpu", "graph-up-arrow", "lightbulb"],
+        default_index=0,
+        orientation="horizontal",
+        styles={
+            "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border": "1px solid rgba(255,255,255,0.05)", "border-radius": "8px", "margin-top": "20px"},
+            "icon": {"color": "#94A3B8", "font-size": "16px"}, 
+            "nav-link": {"font-size": "14px", "text-align": "center", "margin":"0px", "--hover-color": "rgba(255,255,255,0.05)", "color": "#E2E8F0"},
+            "nav-link-selected": {"background-color": "#00C4B4", "color": "#0A0F1C", "font-weight": "600"},
+        }
+    )
 
-st.sidebar.markdown("---")
-st.sidebar.subheader("Global Filters (Analytics)")
-dept_filter = st.sidebar.multiselect("Department", options=df['Department'].unique(), default=df['Department'].unique())
-gender_filter = st.sidebar.multiselect("Gender", options=df['Gender'].unique(), default=df['Gender'].unique())
-jobrole_filter = st.sidebar.multiselect("Job Role", options=df['JobRole'].unique(), default=df['JobRole'].unique())
-age_range = st.sidebar.slider("Age Range", min_value=int(df['Age'].min()), max_value=int(df['Age'].max()), value=(18, 60))
+st.markdown("---")
 
-# Apply filters
+# --- GLOBAL FILTERS (Hidden in sidebar to keep UI clean) ---
+with st.sidebar:
+    st.subheader("Global Filters")
+    dept_filter = st.multiselect("Department", options=df['Department'].unique(), default=df['Department'].unique())
+    gender_filter = st.multiselect("Gender", options=df['Gender'].unique(), default=df['Gender'].unique())
+    jobrole_filter = st.multiselect("Job Role", options=df['JobRole'].unique(), default=df['JobRole'].unique())
+    age_range = st.slider("Age Range", min_value=int(df['Age'].min()), max_value=int(df['Age'].max()), value=(18, 60))
+
 filtered_df = df[
     (df['Department'].isin(dept_filter)) &
     (df['Gender'].isin(gender_filter)) &
@@ -115,18 +172,11 @@ filtered_df = df[
 
 # --- PAGES ---
 
-if page == "🏠 Home / Hero":
-    st.markdown('<div class="hero-title">AttritionIQ</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-subtitle">Proactively identify flight risks and understand workforce dynamics using Machine Learning.</div>', unsafe_allow_html=True)
+if selected == "Home":
+    st.markdown('<div class="main-title">AttritionIQ Platform</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Proactively identify flight risks and understand workforce dynamics using advanced Machine Learning.</div>', unsafe_allow_html=True)
     
-    st.markdown("""
-    Welcome to **AttritionIQ**. This end-to-end platform allows HR and Management to:
-    - **Explore** past attrition trends.
-    - **Predict** the likelihood of a specific employee leaving.
-    - **Understand** key drivers of attrition.
-    """)
-    
-    st.markdown("### 🏆 Key Performance Indicators (KPIs)")
+    st.markdown("### Key Performance Indicators")
     col1, col2, col3, col4 = st.columns(4)
     
     total_emp = len(filtered_df)
@@ -137,39 +187,39 @@ if page == "🏠 Home / Hero":
     
     with col1:
         st.markdown(f'''
-        <div class="metric-card">
+        <div class="glass-card glass-card-accent-1">
             <div class="metric-title">Total Employees</div>
             <div class="metric-value">{total_emp}</div>
         </div>
         ''', unsafe_allow_html=True)
     with col2:
         st.markdown(f'''
-        <div class="metric-card" style="border-left-color: #FF4B4B;">
+        <div class="glass-card glass-card-accent-2">
             <div class="metric-title">Attrition Rate</div>
             <div class="metric-value">{attrition_rate:.1f}%</div>
         </div>
         ''', unsafe_allow_html=True)
     with col3:
         st.markdown(f'''
-        <div class="metric-card" style="border-left-color: #FACA2B;">
+        <div class="glass-card glass-card-accent-3">
             <div class="metric-title">Average Age</div>
             <div class="metric-value">{avg_age:.1f} yrs</div>
         </div>
         ''', unsafe_allow_html=True)
     with col4:
         st.markdown(f'''
-        <div class="metric-card" style="border-left-color: #0068C9;">
+        <div class="glass-card glass-card-accent-4">
             <div class="metric-title">Avg Monthly Income</div>
             <div class="metric-value">${avg_salary:,.0f}</div>
         </div>
         ''', unsafe_allow_html=True)
         
-    st.markdown("### 🗃️ Dataset Overview")
+    st.markdown("### Dataset Overview")
     st.dataframe(filtered_df.head(10), use_container_width=True)
 
-elif page == "📊 Analytics Dashboard":
-    st.title("📊 AttritionIQ Analytics")
-    st.write("Interactive exploration of workforce demographics and attrition drivers.")
+elif selected == "Analytics":
+    st.markdown('<div class="main-title">Analytics Dashboard</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Interactive exploration of workforce demographics and attrition drivers.</div>', unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["Demographics", "Income & Satisfaction"])
     
@@ -182,7 +232,6 @@ elif page == "📊 Analytics Dashboard":
             
         with col2:
             st.subheader("Age Distribution")
-            # Interactive histogram via Streamlit native bar chart
             age_dist = filtered_df['Age'].value_counts().sort_index()
             st.bar_chart(age_dist, use_container_width=True)
             
@@ -197,7 +246,8 @@ elif page == "📊 Analytics Dashboard":
             ot_att = filtered_df.groupby(['OverTime', 'Attrition']).size().unstack(fill_value=0)
             st.bar_chart(ot_att, use_container_width=True)
 
-    st.markdown("### 📷 Advanced Static Visualizations")
+    st.markdown("---")
+    st.markdown("### Advanced Static Visualizations")
     with st.expander("View High-Resolution Auto-Generated Charts"):
         c1, c2 = st.columns(2)
         if os.path.exists('charts/correlation_heatmap.png'):
@@ -205,57 +255,61 @@ elif page == "📊 Analytics Dashboard":
         if os.path.exists('charts/monthly_income_attrition.png'):
             c2.image('charts/monthly_income_attrition.png', caption='Monthly Income vs Attrition')
 
-elif page == "🤖 Machine Learning":
-    st.title("🤖 Machine Learning Model Evaluation")
-    st.write("Review how our predictive models performed and which model was selected for live prediction.")
+elif selected == "Machine Learning":
+    st.markdown('<div class="main-title">Model Evaluation</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Review predictive model performance and algorithm selection.</div>', unsafe_allow_html=True)
     
     if model_data:
-        st.success(f"✅ Best Model Loaded: **{model_data['model_name']}**")
-        st.markdown("### 📈 Best Model Performance Metrics")
-        m_cols = st.columns(5)
-        m_cols[0].metric("Accuracy", f"{model_data['metrics']['Accuracy']:.2%}")
-        m_cols[1].metric("Precision", f"{model_data['metrics']['Precision']:.2%}")
-        m_cols[2].metric("Recall", f"{model_data['metrics']['Recall']:.2%}")
-        m_cols[3].metric("F1-Score", f"{model_data['metrics']['F1-score']:.2%}")
-        m_cols[4].metric("ROC-AUC", f"{model_data['metrics']['ROC-AUC']:.2%}")
+        st.success(f"Best Model Loaded: **{model_data['model_name']}**")
+        st.markdown("### Best Model Performance Metrics")
         
-        st.markdown("### 🏆 Model Comparison Chart")
+        col1, col2, col3, col4, col5 = st.columns(5)
+        metrics = model_data['metrics']
+        
+        with col1: st.metric("Accuracy", f"{metrics['Accuracy']:.2%}")
+        with col2: st.metric("Precision", f"{metrics['Precision']:.2%}")
+        with col3: st.metric("Recall", f"{metrics['Recall']:.2%}")
+        with col4: st.metric("F1-Score", f"{metrics['F1-score']:.2%}")
+        with col5: st.metric("ROC-AUC", f"{metrics['ROC-AUC']:.2%}")
+        
+        st.markdown("---")
+        st.markdown("### Model Comparison Chart")
         if os.path.exists('charts/model_comparison.png'):
             st.image('charts/model_comparison.png', use_column_width=True)
-        else:
-            st.info("Model comparison chart not found. Run training script.")
     else:
         st.error("Model data not found. Please run the training script.")
 
-elif page == "🔮 Live Prediction":
-    st.title("🔮 AttritionIQ Live Prediction")
-    st.write("Input employee details to predict their likelihood of leaving the company.")
+elif selected == "Live Prediction":
+    st.markdown('<div class="main-title">Live Prediction</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Input employee details to predict their likelihood of leaving the company.</div>', unsafe_allow_html=True)
     
     if not model_data:
-        st.warning("⚠️ Please train the model first by running `python train_model.py`.")
+        st.warning("Please train the model first by running the training script.")
         st.stop()
         
-    with st.form("prediction_form"):
-        st.subheader("Employee Details")
-        
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            age = st.number_input("Age", min_value=18, max_value=65, value=30)
-            years_at_company = st.number_input("Years At Company", min_value=0, max_value=40, value=5)
-        with col2:
-            monthly_income = st.number_input("Monthly Income ($)", min_value=1000, max_value=20000, value=5000)
-            department = st.selectbox("Department", df['Department'].unique())
-        with col3:
-            job_role = st.selectbox("Job Role", df['JobRole'].unique())
-            job_satisfaction = st.slider("Job Satisfaction", 1, 4, 3)
-        with col4:
-            overtime = st.selectbox("OverTime", ["Yes", "No"])
-            marital_status = st.selectbox("Marital Status", df['MaritalStatus'].unique())
+    with st.container():
+        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+        with st.form("prediction_form"):
+            st.markdown("### Employee Profile Form")
             
-        submit = st.form_submit_button("Predict Attrition Risk 🚀")
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                age = st.number_input("Age", min_value=18, max_value=65, value=30)
+                years_at_company = st.number_input("Years At Company", min_value=0, max_value=40, value=5)
+            with col2:
+                monthly_income = st.number_input("Monthly Income ($)", min_value=1000, max_value=20000, value=5000)
+                department = st.selectbox("Department", df['Department'].unique())
+            with col3:
+                job_role = st.selectbox("Job Role", df['JobRole'].unique())
+                job_satisfaction = st.slider("Job Satisfaction", 1, 4, 3)
+            with col4:
+                overtime = st.selectbox("OverTime", ["Yes", "No"])
+                marital_status = st.selectbox("Marital Status", df['MaritalStatus'].unique())
+                
+            submit = st.form_submit_button("Predict Attrition Risk", type="primary")
+        st.markdown('</div>', unsafe_allow_html=True)
         
     if submit:
-        # Create a dataframe with default mode/median values for ALL features
         input_dict = {}
         for col in df.columns:
             if col != 'Attrition':
@@ -264,7 +318,6 @@ elif page == "🔮 Live Prediction":
                 else:
                     input_dict[col] = df[col].median()
                     
-        # Update with user inputs
         input_dict['Age'] = age
         input_dict['MonthlyIncome'] = monthly_income
         input_dict['OverTime'] = overtime
@@ -275,36 +328,33 @@ elif page == "🔮 Live Prediction":
         input_dict['MaritalStatus'] = marital_status
         
         input_df = pd.DataFrame([input_dict])
-        
-        # Preprocess
         X_processed = model_data['preprocessor'].transform(input_df)
-        
-        # Predict
-        prob = model_data['model'].predict_proba(X_processed)[0][1] # Probability of 'Yes'
-        prediction = model_data['model'].predict(X_processed)[0]
+        prob = model_data['model'].predict_proba(X_processed)[0][1]
         
         st.markdown("---")
-        st.subheader("🎯 Prediction Result")
+        st.markdown("### Prediction Result")
         
         res_col1, res_col2 = st.columns(2)
         with res_col1:
             if prob > 0.5:
-                st.error("### 🚨 Employee Likely To Leave")
+                st.error("### High Flight Risk Detected")
+                st.markdown("This employee demonstrates patterns consistent with historical attrition profiles.")
             else:
-                st.success("### ✅ Employee Likely To Stay")
+                st.success("### Stable Retention Profile")
+                st.markdown("This employee demonstrates patterns consistent with historical retention profiles.")
                 
         with res_col2:
-            st.metric("Confidence Percentage (Risk Score)", f"{prob * 100:.1f}%")
+            st.metric("Risk Score (Probability)", f"{prob * 100:.1f}%")
             st.progress(float(prob))
             
-        st.info("ℹ️ **Note:** The model uses default typical values for features not explicitly requested in the input form.")
+        st.info("Note: The model uses default typical values for features not explicitly requested in the input form.")
 
-elif page == "💡 Business Insights":
-    st.title("💡 Actionable Business Insights")
-    st.write("Data-driven recommendations to reduce employee attrition and improve retention.")
+elif selected == "Insights":
+    st.markdown('<div class="main-title">Business Insights</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Data-driven recommendations to reduce employee attrition and improve retention.</div>', unsafe_allow_html=True)
     
     st.markdown("""
-    Based on our comprehensive exploratory data analysis (EDA) and machine learning feature importance, here are the key insights:
+    <div class="glass-card">
     
     ### 1. Overtime is a Major Flight Risk
     - **Insight**: Employees who work overtime have a significantly higher attrition rate.
@@ -325,5 +375,13 @@ elif page == "💡 Business Insights":
     ### 5. Age Factor
     - **Insight**: Younger employees (Age 18-25) have the highest turnover rates.
     - **Recommendation**: Enhance the onboarding process. Offer mentorship programs to better integrate young talent into the company culture.
-    """)
-    st.success("By addressing these key areas proactively, management can significantly lower the attrition rate and retain valuable talent.")
+    
+    </div>
+    """, unsafe_allow_html=True)
+    
+# --- FOOTER ---
+st.markdown("""
+<div class="custom-footer">
+    Powered by AttritionIQ Machine Learning Engine | Secure HR Analytics Dashboard
+</div>
+""", unsafe_allow_html=True)

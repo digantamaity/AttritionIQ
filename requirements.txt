@@ -7,3 +7,5 @@ scikit-learn
 xgboost
 imbalanced-learn
 requests
+
+streamlit-option-menu
