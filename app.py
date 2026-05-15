@@ -184,19 +184,35 @@ def train_dynamic_model(df, target_col):
 # --- SIDEBAR: DATA SOURCE & FILTERS ---
 with st.sidebar:
     st.markdown("### Data Source")
-    data_source = st.radio("Select Dataset", ["Sample IBM HR Dataset", "Upload Custom CSV"])
+    
+    # Read preference from URL to survive browser refreshes
+    default_idx = 1 if st.query_params.get("source") == "custom" else 0
+    data_source = st.radio("Select Dataset", ["Sample IBM HR Dataset", "Upload Custom CSV"], index=default_idx)
+    
+    # Update URL params based on selection
+    if data_source == "Upload Custom CSV":
+        st.query_params["source"] = "custom"
+    else:
+        st.query_params["source"] = "ibm"
     
     df = None
+    CUSTOM_DATA_PATH = "data/custom_dataset.csv"
+    
     if data_source == "Upload Custom CSV":
         uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
+            df.to_csv(CUSTOM_DATA_PATH, index=False) # Save to disk to survive refreshes
             
             # Reset custom model state if a new file is uploaded
             if 'uploaded_filename' not in st.session_state or st.session_state['uploaded_filename'] != uploaded_file.name:
                 st.session_state['uploaded_filename'] = uploaded_file.name
                 st.session_state['custom_model_data'] = None
                 st.session_state['custom_target_col'] = None
+        elif os.path.exists(CUSTOM_DATA_PATH):
+            # Load the previously saved file if it exists and no new file is uploaded
+            df = pd.read_csv(CUSTOM_DATA_PATH)
+            st.success("Loaded previously uploaded dataset!")
         else:
             st.info("Please upload a CSV file to view analytics.")
             st.stop()
