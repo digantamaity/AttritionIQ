@@ -25,7 +25,8 @@ st.markdown("""
     }
     
     /* Hide Default Streamlit Elements */
-    header {visibility: hidden;}
+    header {display: none !important;}
+    #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
     /* Glassmorphism Cards */
@@ -145,7 +146,7 @@ with col_nav:
         default_index=0,
         orientation="horizontal",
         styles={
-            "container": {"padding": "0!important", "background-color": "rgba(255,255,255,0.03)", "border": "1px solid rgba(255,255,255,0.05)", "border-radius": "8px", "margin-top": "20px"},
+            "container": {"padding": "5px!important", "background-color": "rgba(255,255,255,0.03)", "border": "1px solid rgba(255,255,255,0.05)", "border-radius": "8px", "margin-top": "20px"},
             "icon": {"color": "#94A3B8", "font-size": "16px"}, 
             "nav-link": {"font-size": "14px", "text-align": "center", "margin":"0px", "--hover-color": "rgba(255,255,255,0.05)", "color": "#E2E8F0"},
             "nav-link-selected": {"background-color": "#00C4B4", "color": "#0A0F1C", "font-weight": "600"},
