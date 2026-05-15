@@ -125,13 +125,25 @@ def train_dynamic_model(df, target_col):
     df_clean = df.dropna(subset=[target_col]).copy()
     y = df_clean[target_col]
     
+    if y.nunique() > 10:
+        raise ValueError(f"Target column '{target_col}' has {y.nunique()} unique values. Please select a categorical column (like 'Attrition' or 'left') to train a classifier.")
+        
     le = LabelEncoder()
     y_encoded = le.fit_transform(y.astype(str))
     is_binary = len(le.classes_) == 2
     
     X = df_clean.drop(columns=[target_col])
-    cat_cols = X.select_dtypes(include=['object', 'category']).columns.tolist()
+    
+    # Prevent OOM Crash: Filter out high-cardinality categorical columns (e.g., Emp ID, Names)
+    cat_cols = []
+    for col in X.select_dtypes(include=['object', 'category']).columns:
+        if X[col].nunique() <= 50:
+            cat_cols.append(col)
+            
     num_cols = X.select_dtypes(include=[np.number]).columns.tolist()
+    
+    # Keep only selected columns to avoid massive OneHotEncoding
+    X = X[num_cols + cat_cols]
     
     num_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
