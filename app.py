@@ -22,9 +22,10 @@ st.markdown("""
         color: #E2E8F0;
     }
     
-    header {display: none !important;}
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    header {background-color: transparent !important;}
+    .block-container {padding-top: 2rem !important;}
     
     .glass-card {
         background: rgba(255, 255, 255, 0.03);
