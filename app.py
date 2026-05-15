@@ -237,7 +237,7 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### Global Filters")
     
-    cat_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
+    cat_cols = [col for col in df.select_dtypes(include=['object', 'category']).columns if df[col].nunique() <= 50]
     num_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     filter_dict = {}
     
