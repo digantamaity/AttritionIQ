@@ -1,131 +1,139 @@
-# AttritionIQ
+<div align="center">
+  <img src="assets/logo.png" alt="AttritionIQ Logo" width="200"/>
+  
+  # 🌐 AttritionIQ
+  ### *Advanced HR Analytics & Dynamic Machine Learning Engine*
+  
+  [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://attritioniq.streamlit.app/)
+  [![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+  [![Scikit-Learn](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-orange.svg)](https://scikit-learn.org/)
 
-## 📊 Business Problem Statement
-Employee attrition is a significant cost for modern organizations. **AttritionIQ** is a professional-grade analytics platform that proactively identifies employees at high risk of leaving using Machine Learning.
+  **Empowering HR departments with data-driven predictive insights and automated AI modeling.**
+</div>
 
-This platform features a **Dynamic Auto-ML Engine** that allows users to upload *any* HR dataset in CSV format, automatically train a custom model on the fly, and generate predictions and insights instantly—all through a premium, glassmorphism-styled dashboard.
+---
 
-## 🚀 Technologies Used
-- **Language**: Python 3.12+
-- **Data Manipulation**: Pandas, NumPy
-- **Machine Learning**: Scikit-Learn (Random Forest, Logistic Regression), XGBoost
-- **Data Visualization**: Matplotlib, Seaborn, Streamlit Native Charts
-- **Web Dashboard**: Streamlit (Premium Glassmorphism UI)
-- **Special Features**: Auto-ML Engine, Dynamic CSV Explorer, URL State Persistence
+## 📖 About AttritionIQ
 
-## 📂 Project Structure
+**AttritionIQ** is a professional-grade, end-to-end HR analytics platform designed to solve the critical business problem of employee turnover. Unlike static dashboards, AttritionIQ features a **proprietary Auto-ML engine** that allows organizations to upload *any* custom HR dataset and instantly train a specialized predictive model tailored to their unique workforce.
+
+With a premium **Glassmorphism UI** and interactive data exploration tools, AttritionIQ bridges the gap between raw data and actionable retention strategies.
+
+---
+
+## 🚀 Live Demo
+### [Explore the Dashboard Live →](https://attritioniq.streamlit.app/)
+
+---
+
+## 📸 Dashboard Preview
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/digantamaity/AttritionIQ/main/screenshots/home_v2.png" alt="Dashboard Home" width="800" style="border-radius: 10px; border: 1px solid #2d333b;"/>
+  <br/>
+  <i>(Replace the link above with your actual screenshot path in the screenshots/ folder)</i>
+</div>
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | Streamlit, Horizontal Option-Menu, Custom Glassmorphism CSS |
+| **Machine Learning** | Scikit-Learn (Random Forest, Logistic Regression), XGBoost |
+| **Data Engine** | Pandas, NumPy, Scipy |
+| **Visualization** | Matplotlib, Seaborn, Streamlit-Native charting |
+| **Deployment** | Streamlit Community Cloud, GitHub Actions |
+
+---
+
+## 🌟 Core Features
+
+### 1. 📂 Dynamic Dataset Upload
+Upload any CSV file. The app intelligently scans your data, identifies schemas, and handles persistence across browser refreshes using local caching and URL state.
+
+### 2. 🤖 Dynamic Auto-ML Engine
+Select your target variable (e.g., `left` or `attrition`) and watch the app train a specialized Random Forest model on the fly. It includes automatic:
+- Missing value imputation
+- Categorical encoding (ignoring high-cardinality noise like IDs)
+- Feature scaling
+- Performance metric generation (Accuracy, Precision, Recall, F1)
+
+### 3. 📊 Advanced Generic Explorer
+Interactive data visualization that adapts to your dataset. Generate scatter plots, bar charts, and distribution views by selecting custom axes dynamically.
+
+### 4. 🔮 Live Prediction Suite
+A dynamically generated input form that builds itself based on your dataset’s columns, allowing real-time "What-If" analysis for specific employee profiles.
+
+### 5. 💡 Algorithmic Insights
+Automatically calculates feature importance and correlations against your target variable to highlight the hidden drivers of employee turnover.
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    A[User CSV Upload] --> B[Data Preprocessing & Schema Detection]
+    B --> C[Dynamic BI Filters]
+    B --> D[Auto-ML Training Pipeline]
+    D --> E[Random Forest Classifier]
+    E --> F[Live Prediction Form]
+    E --> G[Algorithmic Insights]
+    C --> H[Interactive Visualizations]
+    F --> I[User Dashboard UI]
+    G --> I
+    H --> I
+```
+
+---
+
+## 📂 Repository Structure
+
 ```text
-Employee-Attrition-Prediction/
+AttritionIQ/
 │
-├── data/
-│   └── WA_Fn-UseC_-HR-Employee-Attrition.csv  # Dataset downloaded automatically via script
-│
-├── notebook/
-│   └── attrition_prediction.ipynb             # (Optional) Jupyter notebook for manual EDA
-│
-├── screenshots/                               # App screenshots go here
-│
-├── charts/                                    # High-resolution charts generated by train_model.py
-│
-├── models/
-│   └── model.pkl                              # Pickled preprocessor and best ML model
-│
-├── sql/
-│   └── queries.sql                            # SQL queries for HR Analytics
-│
-├── app.py                                     # Streamlit Dashboard application
-├── train_model.py                             # ML pipeline (EDA, SMOTE, Training)
-├── requirements.txt                           # Python dependencies
-├── README.md                                  # Project documentation
-└── .gitignore                                 # Git ignore file
+├── assets/             # Branding and minimalist logos
+├── data/               # IBM Sample & Dynamic custom uploads
+├── models/             # Pre-trained IBM model serialization
+├── screenshots/        # Portfolio UI visual assets
+├── app.py              # Main dashboard logic & Auto-ML engine
+├── train_model.py      # Core ML pipeline for IBM sample
+├── requirements.txt    # Production dependencies
+└── README.md           # Professional Documentation
 ```
-
-## 🛠️ Installation & Usage Steps
-
-### 1. Clone the Repository
-```bash
-git init
-git remote add origin <your-github-repo-url>
-git pull origin main
-```
-*(Or simply download the source code locally into a folder)*
-
-### 2. Set Up Virtual Environment (Optional but Recommended)
-```bash
-python -m venv venv
-venv\Scripts\activate  # On Windows
-# source venv/bin/activate  # On Mac/Linux
-```
-
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Run the ML Pipeline (Data Download & Training)
-Before running the dashboard, you must run the training script. This script will download the dataset, perform EDA, generate charts, train multiple models, and save the best model.
-```bash
-python train_model.py
-```
-
-### 5. Launch the Streamlit Dashboard
-```bash
-streamlit run app.py
-```
-This will open the professional analytics dashboard in your web browser.
 
 ---
 
-## 📈 Power BI + Excel Integration Guide
+## ⚙️ Installation & Setup
 
-This dataset (`WA_Fn-UseC_-HR-Employee-Attrition.csv`) is excellent for Business Intelligence tools.
+1. **Clone the project**
+   ```bash
+   git clone https://github.com/digantamaity/AttritionIQ.git
+   cd AttritionIQ
+   ```
 
-### Connecting to Power BI:
-1. Open Power BI Desktop.
-2. Click **Get Data** -> **Text/CSV**.
-3. Select the `WA_Fn-UseC_-HR-Employee-Attrition.csv` file from the `data/` folder.
-4. Click **Load** (or **Transform Data** if you wish to clean columns).
-5. **Recommended Visuals**:
-   - *Donut Chart*: Attrition Rate (Yes/No).
-   - *Clustered Bar Chart*: Attrition Count by Department.
-   - *Line and Stacked Column Chart*: Monthly Income vs Attrition.
-   - *Slicers*: Add slicers for Job Role, Gender, and Marital Status.
+2. **Install requirements**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Excel Pivot Table Ideas:
-1. Open the CSV in Excel.
-2. Select all data (Ctrl+A) and insert a **PivotTable**.
-3. **Idea 1**: Drag `Department` to Rows, `Attrition` to Columns, and `EmployeeCount` (or any text field like `Attrition`) to Values (set to Count).
-4. **Idea 2**: Group by `Age` ranges in Rows, and calculate average `JobSatisfaction` in Values.
+3. **Run the application**
+   ```bash
+   streamlit run app.py
+   ```
 
 ---
 
-## 🌐 Deployment Instructions
+## 🤝 Contribution
+Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
 
-### GitHub Deployment
-```bash
-git init
-git add .
-git commit -m "Initial Commit: AttritionIQ Project"
-git branch -M main
-git remote add origin <repo_url>
-git push -u origin main
-```
-
-### Streamlit Cloud Deployment
-1. Go to [share.streamlit.io](https://share.streamlit.io/) and log in with your GitHub account.
-2. Click **New app**.
-3. Select the repository, branch (`main`), and main file path (`app.py`).
-4. Click **Deploy!**
-5. Your application will be live globally via a Streamlit URL!
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-## 🌟 Key Features
-- **Auto-ML Engine**: Upload any custom CSV and train a Random Forest model on the fly.
-- **Dynamic Prediction Forms**: Automatically generated input forms based on your dataset's columns.
-- **Generic Data Explorer**: Interactive scatter plots and bar charts for any uploaded dataset.
-- **State Persistence**: URL-based state and local disk caching to survive browser refreshes.
-- **Premium UI**: Professional, dark-mode, emoji-free dashboard with glassmorphism aesthetics.
-
----
-*Developed for Portfolio & TCS NQT Resume Demonstrations.*
+<div align="center">
+  Developed with ❤️ by <a href="https://github.com/digantamaity">Diganta Maity</a>
+</div>
