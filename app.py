@@ -141,7 +141,7 @@ with col_logo:
 with col_nav:
     selected = option_menu(
         menu_title=None,
-        options=["Home", "Analytics", "Machine Learning", "Live Prediction", "Insights"],
+        options=["Home", "Analytics", "ML Models", "Live Prediction", "Insights"],
         icons=["house", "bar-chart-line", "cpu", "graph-up-arrow", "lightbulb"],
         default_index=0,
         orientation="horizontal",
@@ -256,7 +256,7 @@ elif selected == "Analytics":
         if os.path.exists('charts/monthly_income_attrition.png'):
             c2.image('charts/monthly_income_attrition.png', caption='Monthly Income vs Attrition')
 
-elif selected == "Machine Learning":
+elif selected == "ML Models":
     st.markdown('<div class="main-title">Model Evaluation</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-title">Review predictive model performance and algorithm selection.</div>', unsafe_allow_html=True)
     
