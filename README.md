@@ -41,11 +41,12 @@ With a premium **Glassmorphism UI** and interactive data exploration tools, Attr
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend** | Streamlit, Horizontal Option-Menu, Custom Glassmorphism CSS |
-| **Machine Learning** | Scikit-Learn (Random Forest, Logistic Regression), XGBoost |
-| **Data Engine** | Pandas, NumPy, Scipy |
+| **Language** | Python 3.12+ |
+| **Frontend** | Streamlit, Streamlit Option-Menu, HTML5, Custom Glassmorphism CSS |
+| **Machine Learning** | Scikit-Learn (Random Forest, Logistic Regression), XGBoost, Imbalanced-Learn (SMOTE) |
+| **Data Processing** | Pandas, NumPy, Scipy, Pickle (Serialization) |
 | **Visualization** | Matplotlib, Seaborn, Streamlit-Native charting |
-| **Deployment** | Streamlit Community Cloud, GitHub Actions |
+| **Infrastructure** | Streamlit Community Cloud, GitHub Actions, Git |
 
 ---
 
