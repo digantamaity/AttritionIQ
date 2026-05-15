@@ -29,11 +29,11 @@ With a premium **Glassmorphism UI** and interactive data exploration tools, Attr
 
 ## 📸 Dashboard Preview
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/digantamaity/AttritionIQ/main/screenshots/home_v2.png" alt="Dashboard Home" width="800" style="border-radius: 10px; border: 1px solid #2d333b;"/>
-  <br/>
-  <i>(Replace the link above with your actual screenshot path in the screenshots/ folder)</i>
-</div>
+<img width="1919" height="982" alt="image" src="https://github.com/user-attachments/assets/3954c22a-977b-48b8-b99d-4db3e47c964d" />
+
+<img width="1919" height="1048" alt="image" src="https://github.com/user-attachments/assets/b89a18c1-7f08-47a9-982d-65a9a3a4ec51" />
+
+
 
 ---
 
