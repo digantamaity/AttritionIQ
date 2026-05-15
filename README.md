@@ -1,15 +1,17 @@
 # AttritionIQ
 
 ## 📊 Business Problem Statement
-Employee attrition is a significant cost for modern organizations. Replacing an employee often costs a large percentage of their annual salary due to recruitment, onboarding, and lost productivity. The goal of this project is to proactively identify employees at high risk of leaving using Machine Learning, and to provide HR management with actionable insights via an interactive dashboard to improve employee retention strategies.
+Employee attrition is a significant cost for modern organizations. **AttritionIQ** is a professional-grade analytics platform that proactively identifies employees at high risk of leaving using Machine Learning.
+
+This platform features a **Dynamic Auto-ML Engine** that allows users to upload *any* HR dataset in CSV format, automatically train a custom model on the fly, and generate predictions and insights instantly—all through a premium, glassmorphism-styled dashboard.
 
 ## 🚀 Technologies Used
-- **Language**: Python 3.9+
+- **Language**: Python 3.12+
 - **Data Manipulation**: Pandas, NumPy
-- **Machine Learning**: Scikit-Learn, XGBoost, Imbalanced-learn (SMOTE)
-- **Data Visualization**: Matplotlib, Seaborn
-- **Web Dashboard**: Streamlit
-- **Analytics**: SQL, Excel, Power BI
+- **Machine Learning**: Scikit-Learn (Random Forest, Logistic Regression), XGBoost
+- **Data Visualization**: Matplotlib, Seaborn, Streamlit Native Charts
+- **Web Dashboard**: Streamlit (Premium Glassmorphism UI)
+- **Special Features**: Auto-ML Engine, Dynamic CSV Explorer, URL State Persistence
 
 ## 📂 Project Structure
 ```text
@@ -118,10 +120,12 @@ git push -u origin main
 
 ---
 
-## 🔮 Future Improvements
-- Integrate **Deep Learning** models using TensorFlow/Keras for potential accuracy improvements.
-- Add **SHAP (SHapley Additive exPlanations)** values into the Streamlit app to explain *why* the model made a specific prediction for an employee.
-- Automate data pipeline triggers using **Apache Airflow**.
+## 🌟 Key Features
+- **Auto-ML Engine**: Upload any custom CSV and train a Random Forest model on the fly.
+- **Dynamic Prediction Forms**: Automatically generated input forms based on your dataset's columns.
+- **Generic Data Explorer**: Interactive scatter plots and bar charts for any uploaded dataset.
+- **State Persistence**: URL-based state and local disk caching to survive browser refreshes.
+- **Premium UI**: Professional, dark-mode, emoji-free dashboard with glassmorphism aesthetics.
 
 ---
 *Developed for Portfolio & TCS NQT Resume Demonstrations.*
